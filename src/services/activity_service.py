@@ -30,7 +30,12 @@ class ActivityService:
         """
         params = [bigquery.ScalarQueryParameter("user_id", "STRING", user_id)]
 
-        # TODO: 日付範囲のフィルタリングを追加
+        if start_date:
+            query += " AND start_time >= @start_date"
+            params.append(bigquery.ScalarQueryParameter("start_date", "TIMESTAMP", start_date))
+        if end_date:
+            query += " AND end_time <= @end_date"
+            params.append(bigquery.ScalarQueryParameter("end_date", "TIMESTAMP", end_date))
 
         query += " ORDER BY start_time DESC"
 

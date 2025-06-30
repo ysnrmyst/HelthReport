@@ -12,7 +12,7 @@ activity_service = ActivityService(db_client=db_client, table_id=TABLE_ID)
 
 activities_bp = Blueprint('activities', __name__, url_prefix='/api/v1/activities')
 
-@activities_bp.route('/', methods=['POST'])
+@activities_bp.route('', methods=['POST'])
 def create_activity_route():
     # TODO: 認証デコレータを追加 (user_idをそこから取得)
     user_id = "test-user" # 仮のユーザーID
@@ -29,7 +29,7 @@ def create_activity_route():
 
     return jsonify(new_activity.dict()), 201
 
-@activities_bp.route('/', methods=['GET'])
+@activities_bp.route('', methods=['GET'])
 def get_activities_route():
     # TODO: 認証デコレータを追加 (user_idをそこから取得)
     user_id = "test-user" # 仮のユーザーID
