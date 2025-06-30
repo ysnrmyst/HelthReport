@@ -1,7 +1,7 @@
 steps:
 # Build and push the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image', '.', '--build-arg', 'REACT_APP_API_BASE_URL=${_REACT_APP_API_BASE_URL}'] # _REACT_APP_API_BASE_URL is a Cloud Build substitution variable
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image']

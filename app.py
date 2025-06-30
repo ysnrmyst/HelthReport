@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template
+from flask_cors import CORS
 from vertexai.generative_models import GenerativeModel
 import vertexai
 
@@ -15,18 +16,20 @@ app = Flask(
     template_folder='static/frontend/build'
 )
 
+# Enable CORS
+CORS(app)
+
 # Initialize Vertex AI
-# TODO: Replace with your actual project ID and location
-PROJECT_ID = "helth-report"
-LOCATION = "us-central1"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "helth-report") # Get from env or use default
+LOCATION = os.environ.get("GCP_LOCATION", "us-central1") # Get from env or use default
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Register Blueprints
 app.register_blueprint(activities_bp)
 
-@app.route('/')
-def index():
-    # Serve the React app's index.html
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return render_template('index.html')
 
 if __name__ == '__main__':
