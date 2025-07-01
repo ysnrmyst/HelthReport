@@ -24,11 +24,12 @@ RUN npm install
 # Set REACT_APP_API_BASE_URL as a build argument
 ARG REACT_APP_API_BASE_URL
 
-# Set REACT_APP_API_BASE_URL as an environment variable
-ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
-
 # Build React frontend with the specified API base URL
-RUN CI=true REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL npm run build
+RUN export REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL && \
+    CI=true npm run build
+
+# デバッグ用：環境変数が正しく設定されているか確認
+RUN echo "REACT_APP_API_BASE_URL is set to: $REACT_APP_API_BASE_URL"
 
 # Back to root directory
 WORKDIR /app

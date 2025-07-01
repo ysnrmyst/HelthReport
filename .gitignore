@@ -1,2 +1,22 @@
+# macOS
 .DS_Store
+
+# Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Node.js / React
+node_modules/
+static/frontend/node_modules/
+static/frontend/build/
+
+# Logs
+*.log
+
+# DB
+*.sqlite3
+*.db
