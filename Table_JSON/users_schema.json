@@ -1,0 +1,57 @@
+{
+  "tableReference": {
+    "projectId": "helth-report",
+    "datasetId": "health_data",
+    "tableId": "users"
+  },
+  "schema": {
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "ユーザーの一意なID (UUID)"
+      },
+      {
+        "name": "google_id",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Googleアカウントから取得するユーザーID"
+      },
+      {
+        "name": "email",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "ユーザーのメールアドレス"
+      },
+      {
+        "name": "display_name",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "ユーザーの表示名"
+      },
+      {
+        "name": "profile_picture_url",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "プロフィール画像のURL"
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "mode": "REQUIRED",
+        "description": "レコード作成日時"
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "mode": "REQUIRED",
+        "description": "レコード最終更新日時"
+      }
+    ]
+  },
+  "timePartitioning": {
+    "type": "DAY",
+    "field": "created_at"
+  }
+} 

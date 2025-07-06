@@ -9,7 +9,7 @@ class ActivityBase(BaseModel):
     end_time: datetime = Field(..., description="活動の終了日時")
     activity_content: str = Field(..., description="活動内容のテキスト記述")
     category_id: str = Field(..., description="活動カテゴリのID")
-    fatigue_level: int = Field(..., ge=1, le=5, description="心身の負荷レベル (1-5)")
+    fatigue_level: int = Field(..., ge=0, le=5, description="心身の負荷レベル (0-5)")
     fatigue_notes: Optional[str] = Field(None, description="負荷に関する自由記述")
 
 class ActivityCreate(ActivityBase):
@@ -22,7 +22,7 @@ class ActivityUpdate(BaseModel):
     end_time: Optional[datetime] = None
     activity_content: Optional[str] = None
     category_id: Optional[str] = None
-    fatigue_level: Optional[int] = Field(None, ge=1, le=5)
+    fatigue_level: Optional[int] = Field(None, ge=0, le=5)
     fatigue_notes: Optional[str] = None
 
 class ActivityInDB(ActivityBase):

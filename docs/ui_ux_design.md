@@ -109,3 +109,42 @@ graph TD
 > このデータは登録直後のため、2時間程度削除できない場合があります（BigQueryの仕様）。しばらくしてから再度お試しください。
 
 - バッファが解放されると、通常通り削除・編集が可能になります。
+
+## 仕様更新履歴・注意事項
+
+- **活動量（KPI）**：勤務・学習カテゴリの「作業時間×疲労レベル」の合計を「活動量」としてダッシュボードに表示。
+- **疲労レベル（負荷）**：0〜5の範囲で入力可能。
+- **カレンダー表示仕様**：活動記録は日付を跨いで登録できるが、カレンダー「日」ビューでは「開始日」にのみ表示される（終了日には表示されない）。週・月ビューではバーとして両日にまたがって表示される。
+
+## 開発・デプロイ手順まとめ
+
+### 開発環境（ローカル）
+
+1. 必要な.envファイルをapp.pyと同じディレクトリに配置（.env.development など）
+2. 必要なパッケージをインストール
+   ```sh
+   pip install -r requirements.txt
+   ```
+3. 環境変数をセットしてFlaskアプリを起動
+   ```sh
+   export FLASK_ENV=development
+   export OAUTHLIB_INSECURE_TRANSPORT=1
+   python app.py
+   ```
+
+### 本番環境（Cloud Runデプロイ）
+
+1. .env.productionをapp.pyと同じディレクトリに配置
+2. gcloudコマンドでデプロイ（例）
+   ```sh
+   gcloud run deploy [サービス名] \
+     --source . \
+     --region us-central1 \
+     --project=elth-report \
+     --platform managed \
+     --allow-unauthenticated \
+     --set-env-vars FLASK_ENV=production
+   ```
+
+- Cloud Runの管理画面で環境変数（FLASK_ENV=productionなど）を追加してもOK
+- デプロイ後は https でアクセス
