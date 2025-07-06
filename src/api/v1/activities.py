@@ -16,6 +16,9 @@ activities_bp = Blueprint('activities', __name__, url_prefix='/api/v1/activities
 def create_activity_route():
     # TODO: 認証デコレータを追加 (user_idをそこから取得)
     user_id = "test-user" # 仮のユーザーID
+
+    print("=== POST /api/v1/activities 受信 ===")
+    print(request.json)
     
     try:
         activity_data = ActivityCreate(**request.json)
@@ -80,7 +83,16 @@ def delete_activity_route(activity_id):
     # TODO: 認証デコレータを追加 (user_idをそこから取得)
     user_id = "test-user" # 仮のユーザーID
 
-    deleted = activity_service.delete_activity(activity_id=activity_id, user_id=user_id)
+    try:
+        deleted = activity_service.delete_activity(activity_id=activity_id, user_id=user_id)
+    except Exception as e:
+        # BigQueryストリーミングバッファエラーを検出
+        if 'would affect rows in the streaming buffer' in str(e):
+            return jsonify({
+                "error": "このデータは登録直後のため、2時間程度削除できない場合があります（BigQueryの仕様）。しばらくしてから再度お試しください。"
+            }), 400
+        # その他のエラーは500で返す
+        return jsonify({"error": str(e)}), 500
 
     if not deleted:
         return jsonify({"error": "Activity not found or failed to delete"}), 404

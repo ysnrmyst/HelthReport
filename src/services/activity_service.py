@@ -11,8 +11,13 @@ class ActivityService:
     def create_activity(self, user_id: str, activity_data: ActivityCreate) -> Optional[ActivityInDB]:
         """新しい行動記録をBigQueryに挿入します。"""
         new_record = ActivityInDB(user_id=user_id, **activity_data.dict())
-        
-        rows_to_insert = [new_record.dict(by_alias=True)]
+        record_dict = new_record.dict(by_alias=True)
+        # datetime型をISO8601文字列に変換
+        for k in ["created_at", "updated_at", "start_time", "end_time"]:
+            if isinstance(record_dict.get(k), (str, type(None))):
+                continue
+            record_dict[k] = record_dict[k].isoformat()
+        rows_to_insert = [record_dict]
         errors = self.client.insert_rows_json(self.table_id, rows_to_insert)
         
         if errors:
@@ -106,6 +111,7 @@ class ActivityService:
 
     def delete_activity(self, activity_id: str, user_id: str) -> bool:
         """特定のIDとユーザーIDに基づいて行動記録を削除します。"""
+        logging.info(f"Delete request: activity_id={activity_id}, user_id={user_id}")
         query = f"""
             DELETE FROM `{self.table_id}`
             WHERE id = @activity_id AND user_id = @user_id
@@ -114,10 +120,13 @@ class ActivityService:
             bigquery.ScalarQueryParameter("activity_id", "STRING", activity_id),
             bigquery.ScalarQueryParameter("user_id", "STRING", user_id)
         ]
-
-        query_job = self.client.query(query, job_config=bigquery.QueryJobConfig(query_parameters=params))
-        query_job.result() # クエリの完了を待つ
-
+        logging.info(f"Executing DELETE query: {query} with params: {params}")
+        try:
+            query_job = self.client.query(query, job_config=bigquery.QueryJobConfig(query_parameters=params))
+            query_job.result() # クエリの完了を待つ
+        except Exception as e:
+            logging.error(f"BigQuery DELETE error: {e}")
+            raise
         # 削除が成功したかを確認するために、再度取得を試みる
         if self.get_activity_by_id(activity_id, user_id) is None:
             return True

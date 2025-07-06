@@ -17,7 +17,7 @@ app = Flask(
 )
 
 # Enable CORS
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True, methods=["GET", "POST", "DELETE", "PATCH", "OPTIONS"])
 
 # Initialize Vertex AI
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "helth-report") # Get from env or use default
@@ -25,6 +25,7 @@ LOCATION = os.environ.get("GCP_LOCATION", "us-central1") # Get from env or use d
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Register Blueprints
+CORS(activities_bp)
 app.register_blueprint(activities_bp)
 
 @app.route('/', defaults={'path': ''})

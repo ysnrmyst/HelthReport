@@ -20,3 +20,6 @@ static/frontend/build/
 # DB
 *.sqlite3
 *.db
+
+# .envファイルを無視
+.env.*
