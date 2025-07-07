@@ -25,8 +25,7 @@ RUN npm install
 ARG REACT_APP_API_BASE_URL
 
 # Build React frontend with the specified API base URL
-RUN export REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL && \
-    CI=true npm run build
+RUN REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL CI=true npm run build
 
 # デバッグ用：環境変数が正しく設定されているか確認
 RUN echo "REACT_APP_API_BASE_URL is set to: $REACT_APP_API_BASE_URL"
