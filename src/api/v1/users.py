@@ -59,7 +59,7 @@ def login():
     session['user_id'] = user['id']
     return jsonify({'message': 'login successful', 'user_id': user['id'], 'username': user['username']}), 200
 
-@bp.route('/logout', methods=['GET'])
+@bp.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({'message': 'logout successful'}), 200

@@ -31,6 +31,14 @@ if os.environ.get("FLASK_ENV") == "production":
     app.config['PREFERRED_URL_SCHEME'] = 'https'
     app.config['SERVER_NAME'] = 'helth-report-129908471897.us-central1.run.app'
 
+# Cloud Run（本番環境）用セッションCookie設定
+app.config.update(
+    SESSION_COOKIE_SECURE=True,      # HTTPSのみ
+    SESSION_COOKIE_SAMESITE='None',  # クロスサイトでも送信
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_PATH='/'
+)
+
 # Enable CORS
 CORS(app, 
      resources={r"/*": {"origins": [
@@ -47,16 +55,18 @@ vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Register Blueprints
 app.register_blueprint(activities_bp)
-app.register_blueprint(users_bp)
+app.register_blueprint(users_bp, url_prefix='/api/v1')
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
     # APIリクエストはここで処理しない
-    if path.startswith('api/') or path in ['login', 'logout', 'session', 'register']:
+    if path.startswith('api/'):
         return '', 404
+    # それ以外は全てindex.htmlを返す
     return render_template('index.html')
 
 if __name__ == '__main__':
     # This is used when running locally. Gunicorn is used in production.
+    print(app.url_map)
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

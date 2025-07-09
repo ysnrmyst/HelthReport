@@ -134,17 +134,28 @@ graph TD
 
 ### 本番環境（Cloud Runデプロイ）
 
-1. .env.productionをapp.pyと同じディレクトリに配置
-2. gcloudコマンドでデプロイ（例）
-   ```sh
-   gcloud run deploy [サービス名] \
-     --source . \
-     --region us-central1 \
-     --project=elth-report \
-     --platform managed \
-     --allow-unauthenticated \
-     --set-env-vars FLASK_ENV=production
-   ```
+1. .env.productionをapp.pyと同じディレクトリに配置 stop_dev.sh
+2. React本番ビルド static/frontend
+    npm install
+    npm run build
+3 gcloudでDocker認証
+gcloud auth configure-docker us-central1-docker.pkg.dev
+4. Dockerイメージのビルド プロジェクトルート venv外　Desktop Dockerを起動した状態で
+docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/helth-report/helth-report/helth-report-image:latest --push .
+5. Cloud Runへデプロイ
+gcloud run deploy helth-report \
+  --image us-central1-docker.pkg.dev/helth-report/helth-report/helth-report-image:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars FLASK_SECRET_KEY=myapp_helth_report_key,FLASK_ENV=production
+
 
 - Cloud Runの管理画面で環境変数（FLASK_ENV=productionなど）を追加してもOK
 - デプロイ後は https でアクセス
+
+### Flaskのcatch-allルーティングについて
+
+- APIリクエスト（パスが`/api/`で始まるもの）は404を返す。
+- それ以外の全てのパス（例：/login, /dashboard, /register など）は`index.html`を返し、React RouterによるSPAルーティングが機能するようにしている。
+- これにより、ブラウザで直接URLを叩いてもSPAの画面が正しく表示される。

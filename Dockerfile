@@ -37,4 +37,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # Command to run the application using Gunicorn
-CMD exec gunicorn --bind :$PORT --log-level debug app:app
+CMD ["python", "app.py"]
