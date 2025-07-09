@@ -9,12 +9,13 @@ Googleアカウント認証で取得するユーザー情報と、アプリケ�
 | カラム名              | データ型      | 制約           | 説明                                                      |
 | :-------------------- | :------------ | :------------- | :-------------------------------------------------------- |
 | `id`                  | STRING        | 主キー, NOT NULL | ユーザーの一意なID (UUID)                                 |
-| `google_id`           | STRING        | UNIQUE, NOT NULL | Googleアカウントから取得するユーザーID                    |
 | `email`               | STRING        | UNIQUE, NOT NULL | ユーザーのメールアドレス (Googleアカウントから取得)         |
 | `display_name`        | STRING        | NULL           | ユーザーの表示名 (Googleアカウントから取得、任意)         |
 | `profile_picture_url` | STRING        | NULL           | プロフィール画像のURL (Googleアカウントから取得、任意)    |
 | `created_at`          | TIMESTAMP     | NOT NULL       | レコード作成日時 (自動設定)                               |
 | `updated_at`          | TIMESTAMP     | NOT NULL       | レコード最終更新日時 (自動設定)                           |
+| `username`            | STRING        | UNIQUE, NOT NULL | ユーザー名またはメールアドレス                            |
+| `password_hash`       | STRING        | NOT NULL       | パスワードのハッシュ値                                      |
 
 ## 2. 活動カテゴリ (ActivityCategories) テーブル
 

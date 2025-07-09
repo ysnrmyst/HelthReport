@@ -90,4 +90,45 @@ class UserService:
         result = list(query_job.result())
         if result:
             return UserInDB(**result[0])
-        return None 
+        return None
+
+    def get_user_by_username(self, username: str):
+        """
+        usernameでユーザー情報を取得
+        """
+        query = f"""
+            SELECT * FROM `{self.table_id}`
+            WHERE username = @username
+            LIMIT 1
+        """
+        params = [bigquery.ScalarQueryParameter("username", "STRING", username)]
+        query_job = self.client.query(query, job_config=bigquery.QueryJobConfig(query_parameters=params))
+        result = list(query_job.result())
+        if result:
+            return result[0]
+        return None
+
+    def get_user_by_username_or_id(self, value: str):
+        """
+        usernameまたはuser_idでユーザー情報を取得
+        """
+        query = f"""
+            SELECT * FROM `{self.table_id}`
+            WHERE username = @value OR id = @value
+            LIMIT 1
+        """
+        params = [bigquery.ScalarQueryParameter("value", "STRING", value)]
+        query_job = self.client.query(query, job_config=bigquery.QueryJobConfig(query_parameters=params))
+        result = list(query_job.result())
+        if result:
+            return result[0]
+        return None
+
+    def create_user(self, user: dict):
+        """
+        新規ユーザーをBigQueryにINSERT
+        """
+        errors = self.client.insert_rows_json(self.table_id, [user])
+        if errors:
+            raise Exception(f"BigQuery insert error: {errors}")
+        return True 
