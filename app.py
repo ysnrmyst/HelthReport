@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src'
 
 from api.v1.activities import activities_bp
 from api.v1.users import bp as users_bp
+from api.v1.weekly_reflections import weekly_reflections_bp
 
 app = Flask(
     __name__,
@@ -42,6 +43,7 @@ app.config.update(
 # Enable CORS
 CORS(app, 
      resources={r"/*": {"origins": [
+         "http://localhost:3000",
          "http://127.0.0.1:3000",
          "https://helth-report-129908471897.us-central1.run.app"
      ]}}, 
@@ -56,6 +58,7 @@ vertexai.init(project=PROJECT_ID, location=LOCATION)
 # Register Blueprints
 app.register_blueprint(activities_bp)
 app.register_blueprint(users_bp, url_prefix='/api/v1')
+app.register_blueprint(weekly_reflections_bp)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

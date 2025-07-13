@@ -32,8 +32,10 @@ def create_activity_route():
 
 @activities_bp.route('', methods=['GET'])
 def get_activities_route():
+    print('=== [DEBUG] Activities API called ===')
     print('=== [DEBUG] session:', dict(session))
     print('=== [DEBUG] session["user_id"]:', session.get('user_id'))
+    print('=== [DEBUG] request.headers:', dict(request.headers))
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({"error": "認証情報がありません"}), 401

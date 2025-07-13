@@ -18,7 +18,7 @@ Flaskアプリケーションの標準的な構成に倣い、責務に応じて
 ├── docs/                 # 設計ドキュメント
 └── src/                  # アプリケーションのソースコード
     ├── __init__.py
-    ├── auth/             # 認証関連 (Google OAuth)
+    ├── auth/             # 認証関連
     │   ├── __init__.py
     │   └── routes.py
     ├── models/           # データモデル (Pydanticモデルなど)
@@ -46,7 +46,7 @@ Flaskアプリケーションの標準的な構成に倣い、責務に応じて
 ### 1.2. コンポーネントの責務
 
 *   **`app.py`**: Flaskアプリケーションインスタンスを作成し、Blueprintを登録する。アプリケーション全体の設定を読み込む。
-*   **`src/auth/`**: Google OAuth 2.0によるユーザー認証・セッション管理を担当する。コールバック処理やログイン・ログアウトのエンドポイントを定義する。
+*   **`src/auth/`**: ID・パスワード認証によるユーザー認証・セッション管理を担当する。ログイン・ログアウト・ユーザー登録・セッション確認のエンドポイントを定義する。
 *   **`src/models/`**: APIのレスポンスやリクエストボディ、およびサービス層で扱うデータの構造をPydanticモデルとして定義する。これにより、データのバリデーションと型安全性を確保する。
 *   **`src/services/`**: ビジネスロジックを実装する。BigQueryクライアントライブラリを直接使用して、データベースとのデータ操作（CRUD）を行う。
 *   **`src/api/v1/`**: Flask Blueprintを使用してAPIのエンドポイントを定義する。各ルートは、リクエストを受け取り、適切なサービスを呼び出し、結果をJSON形式で返す責務を持つ。
@@ -176,4 +176,107 @@ def get_activities_route(current_user):
     pass
 
 # ... 他のエンドポイント (GET by ID, PATCH, DELETE) も同様に定義 ...
+```
+
+---
+
+## 3. 週次振り返り・AI診断機能 (Weekly Reflections & AI Diagnosis) の詳細設計
+
+### 3.1. データモデル (`src/models/weekly_reflection.py`)
+
+API設計書・DBスキーマに基づき、Pydanticモデルを定義します。
+
+```python
+from pydantic import BaseModel, Field
+from datetime import date, datetime
+from typing import List, Optional, Dict, Any
+import uuid
+
+class WeeklyReflectionQuestion(BaseModel):
+    text: str = Field(..., description="設問文")
+    score: int = Field(..., ge=1, le=5, description="5段階評価スコア")
+
+class WeeklyReflectionBase(BaseModel):
+    week_start_date: date = Field(..., description="週の開始日")
+    reflection_notes: Optional[str] = Field(None, description="週の振り返りノート")
+    title: Optional[str] = Field(None, description="AI診断リクエストのタイトル")
+    questions: Optional[List[WeeklyReflectionQuestion]] = Field(None, description="設問文＋スコア配列")
+    anxieties: Optional[str] = Field(None, description="不安なこと")
+    good_things: Optional[str] = Field(None, description="良かったこと")
+    ai_diagnosis_result: Optional[str] = Field(None, description="AI診断コメント")
+
+class WeeklyReflectionCreate(WeeklyReflectionBase):
+    pass
+
+class WeeklyReflectionInDB(WeeklyReflectionBase):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="週次振り返りの一意なID")
+    user_id: str = Field(..., description="ユーザーID")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        from_attributes = True
+
+class WeeklyReflectionResponse(WeeklyReflectionInDB):
+    pass
+```
+
+### 3.2. サービス (`src/services/weekly_reflection_service.py`)
+
+BigQueryへの保存・AI診断API呼び出しロジックを実装します。
+
+```python
+from google.cloud import bigquery
+from src.models.weekly_reflection import WeeklyReflectionCreate, WeeklyReflectionInDB
+
+class WeeklyReflectionService:
+    def __init__(self, db_client: bigquery.Client, table_id: str):
+        self.client = db_client
+        self.table_id = table_id
+
+    def create_weekly_reflection(self, user_id: str, data: WeeklyReflectionCreate) -> WeeklyReflectionInDB:
+        # BigQueryに保存するロジック
+        pass
+
+    def request_ai_diagnosis(self, data: dict) -> str:
+        # AI診断APIにリクエストし、診断コメントを返すロジック
+        pass
+```
+
+### 3.3. APIルート (`src/api/v1/weekly_reflections.py`)
+
+Flask Blueprintを使用してエンドポイントを定義します。
+
+```python
+from flask import Blueprint, request, jsonify
+from src.services.weekly_reflection_service import WeeklyReflectionService
+# from src.auth.decorators import login_required
+
+weekly_reflections_bp = Blueprint('weekly_reflections', __name__, url_prefix='/api/v1/weekly-reflections')
+
+@weekly_reflections_bp.route('/ai-diagnosis', methods=['POST'])
+# @login_required
+def ai_diagnosis_route(current_user):
+    # リクエストボディからタイトル・設問文＋スコア配列・不安なこと・良かったことを取得
+    # サービスを呼び出してAI診断コメントを取得
+    # 結果をJSONで返す
+    pass
+```
+
+### 3.4. AI診断リクエストのJSON設計例
+
+```json
+{
+  "title": "週次振り返りAI診断",
+  "questions": [
+    { "text": "今週は十分な睡眠が取れましたか？", "score": 4 },
+    { "text": "今週はバランスの良い食事ができましたか？", "score": 3 },
+    { "text": "今週は適度な運動ができましたか？", "score": 5 },
+    { "text": "今週はストレスを感じることが多かったですか？", "score": 2 },
+    { "text": "今週は仕事や学業に集中できましたか？", "score": 4 },
+    { "text": "今週は気分が前向きでしたか？", "score": 5 }
+  ],
+  "anxieties": "今週は仕事が忙しくて疲れました。",
+  "good_things": "家族と過ごす時間が取れました。"
+}
 ```

@@ -68,17 +68,19 @@ Googleアカウント認証で取得するユーザー情報と、アプリケ�
 
 ## 5. 週次振り返り (WeeklyReflections) テーブル
 
-ユーザーごとの週次集計データと振り返り情報、そしてAIによる診断結果を格納します。
+ユーザーごとの週次集計データと振り返り情報、そしてAIによる診断結果・AI診断リクエスト内容を格納します。
 
 | カラム名                          | データ型      | 制約                                  | 説明                                                              |
 | :-------------------------------- | :------------ | :------------------------------------ | :---------------------------------------------------------------- |
 | `id`                              | STRING        | 主キー, NOT NULL                      | 振り返りレコードの一意なID (UUID)                                 |
 | `user_id`                         | STRING        | 外部キー, NOT NULL                    | 振り返りを行ったユーザーのID (`Users.id`への参照)                 |
 | `week_start_date`                 | DATE          | NOT NULL, UNIQUE (`user_id`, `week_start_date`) | 週の開始日 (例: 月曜日)                                           |
-| `total_activity_duration_minutes` | INT64         | NOT NULL                              | その週の総活動時間 (分単位)                                       |
-| `average_fatigue_level`           | NUMERIC       | NOT NULL                              | その週の平均疲労レベル                                            |
 | `most_frequent_category_id`       | STRING        | 外部キー, NULL                        | その週で最も活動時間の長かったカテゴリのID (`ActivityCategories.id`への参照) |
 | `reflection_notes`                | STRING        | NULL                                  | 週の振り返りに関する自由記述やシステム生成のサマリー              |
 | `ai_diagnosis_result`             | STRING        | NULL                                  | AIによる週次の行動と負荷の分析結果（テキスト）                    |
+| `title`                           | STRING        | NULL                                  | AI診断リクエスト時のタイトル                                      |
+| `questions`                       | JSON          | NULL                                  | AI診断リクエスト時の設問文＋スコア配列（例: `[{"text": "今週は十分な睡眠が取れましたか？", "score": 4}, ...]`） |
+| `anxieties`                       | STRING        | NULL                                  | AI診断リクエスト時の「不安なこと」                                |
+| `good_things`                     | STRING        | NULL                                  | AI診断リクエスト時の「良かったこと」                              |
 | `created_at`                      | TIMESTAMP     | NOT NULL                              | レコード作成日時 (自動設定)                                       |
 | `updated_at`                      | TIMESTAMP     | NOT NULL                              | レコード最終更新日時 (自動設定)                                   |

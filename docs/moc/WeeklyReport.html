@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>週次振り返り - ひびログ</title>
+  <style>
+    body { font-family: 'Segoe UI', 'Meiryo', sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+    h2 { margin-top: 0; }
+    .week-select { margin-bottom: 24px; }
+    .graph-area { background: #f0f4f8; border-radius: 6px; padding: 16px 32px 16px 48px; margin-bottom: 32px; text-align: center; position: relative; }
+    .bar { display: inline-block; width: 30px; margin: 0 6px; background: #7dafff; border-radius: 4px 4px 0 0; vertical-align: bottom; }
+    .line-dot { display: inline-block; width: 10px; height: 10px; background: #ff7300; border-radius: 50%; position: relative; top: -8px; }
+    .line-connector { display: inline-block; width: 36px; height: 2px; background: #ff7300; vertical-align: middle; position: relative; top: -4px; }
+    .question { margin-bottom: 16px; }
+    .radio-group label { margin-right: 12px; }
+    textarea { width: 100%; border-radius: 4px; border: 1px solid #ccc; padding: 8px; margin-top: 4px; }
+    .ai-comment { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 12px; margin: 24px 0; border-radius: 4px; }
+    .btn { background: #2196f3; color: #fff; border: none; border-radius: 4px; padding: 10px 24px; font-size: 1rem; cursor: pointer; }
+    .btn:hover { background: #1976d2; }
+    .label-bold { font-weight: bold; }
+    .graph-labels { margin-top: 8px; font-size: 0.95em; color: #555; }
+    .y-axis-left, .y-axis-right {
+      position: absolute; top: 30px; font-size: 0.9em; color: #888;
+      writing-mode: vertical-rl; text-align: center;
+    }
+    .y-axis-left { left: 0; }
+    .y-axis-right { right: 0; }
+    .ai-btn { margin-left: 12px; background: #ff7300; }
+    .ai-btn:hover { background: #e65100; }
+  </style>
+  <script>
+    function updateAIComment() {
+      document.getElementById('ai-comment').innerText = 'AI診断：今週は疲労レベルが高めです。休息を意識しましょう！';
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>週次振り返り</h2>
+    <div class="week-select">
+      <label for="week">週を選択：</label>
+      <select id="week">
+        <option>2024-07-01〜07</option>
+        <option>2024-07-08〜14</option>
+      </select>
+    </div>
+
+    <div class="graph-area">
+      <div>
+        <!-- 棒グラフ（活動時間） -->
+        <div class="bar" style="height: 60px;"></div>
+        <div class="bar" style="height: 90px;"></div>
+        <div class="bar" style="height: 80px;"></div>
+        <div class="bar" style="height: 120px;"></div>
+        <div class="bar" style="height: 40px;"></div>
+        <div class="bar" style="height: 20px;"></div>
+        <div class="bar" style="height: 0px;"></div>
+      </div>
+      <div style="position: relative; height: 20px;">
+        <!-- 疲労レベル（折れ線グラフの点と線） -->
+        <span class="line-dot" style="margin-left: 10px;"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+        <span class="line-connector"></span>
+        <span class="line-dot"></span>
+      </div>
+      <div class="graph-labels">
+        <span>月</span> <span style="margin-left: 32px;">火</span> <span style="margin-left: 32px;">水</span>
+        <span style="margin-left: 32px;">木</span> <span style="margin-left: 32px;">金</span>
+        <span style="margin-left: 32px;">土</span> <span style="margin-left: 32px;">日</span>
+      </div>
+      <div style="margin-top: 8px; color: #888; font-size: 0.9em;">
+        <span style="margin-right: 16px;"><span style="display:inline-block;width:16px;height:8px;background:#7dafff;vertical-align:middle;margin-right:4px;"></span>活動時間</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#ff7300;border-radius:50%;vertical-align:middle;margin-right:4px;"></span>疲労レベル</span>
+      </div>
+    </div>
+
+    <div>
+      <h4>週次アンケート（5段階評価）</h4>
+      <div class="question">
+        <span class="label-bold">1. 「楽しい」「集中した」と感じられましたか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q1">1</label>
+          <label><input type="radio" name="q1">2</label>
+          <label><input type="radio" name="q1">3</label>
+          <label><input type="radio" name="q1">4</label>
+          <label><input type="radio" name="q1">5</label>
+        </span>
+      </div>
+      <div class="question">
+        <span class="label-bold">2. 疲労感を感じることが少なかったですか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q2">1</label>
+          <label><input type="radio" name="q2">2</label>
+          <label><input type="radio" name="q2">3</label>
+          <label><input type="radio" name="q2">4</label>
+          <label><input type="radio" name="q2">5</label>
+        </span>
+      </div>
+      <div class="question">
+        <span class="label-bold">3. 睡眠の質は良かったですか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q3">1</label>
+          <label><input type="radio" name="q3">2</label>
+          <label><input type="radio" name="q3">3</label>
+          <label><input type="radio" name="q3">4</label>
+          <label><input type="radio" name="q3">5</label>
+        </span>
+      </div>
+      <div class="question">
+        <span class="label-bold">4. 人との交流が億劫ではなかったですか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q4">1</label>
+          <label><input type="radio" name="q4">2</label>
+          <label><input type="radio" name="q4">3</label>
+          <label><input type="radio" name="q4">4</label>
+          <label><input type="radio" name="q4">5</label>
+        </span>
+      </div>
+      <div class="question">
+        <span class="label-bold">5. 身体の痛みなどはなかったですか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q5">1</label>
+          <label><input type="radio" name="q5">2</label>
+          <label><input type="radio" name="q5">3</label>
+          <label><input type="radio" name="q5">4</label>
+          <label><input type="radio" name="q5">5</label>
+        </span>
+      </div>
+      <div class="question">
+        <span class="label-bold">6. 仕事や学習以外の余暇の時間を取りましたか？</span><br>
+        <span class="radio-group">
+          <label><input type="radio" name="q6">1</label>
+          <label><input type="radio" name="q6">2</label>
+          <label><input type="radio" name="q6">3</label>
+          <label><input type="radio" name="q6">4</label>
+          <label><input type="radio" name="q6">5</label>
+        </span>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <label class="label-bold">今、不安なことは何かありますか？</label>
+      <textarea rows="2"></textarea>
+    </div>
+    <div style="margin-top: 16px;">
+      <label class="label-bold">今週、小さくても良かったことを教えて下さい</label>
+      <textarea rows="2"></textarea>
+    </div>
+
+    <div style="margin-top: 32px;">
+      <button class="btn ai-btn" onclick="updateAIComment()">AI診断</button>
+      <button class="btn" style="margin-left: 8px;">保存</button>
+    </div>
+    <div class="ai-comment" id="ai-comment" style="margin-top: 16px;">
+      <strong>AIコメント：</strong>今週もお疲れさまでした！バランス良く過ごせていますね。
+    </div>
+  </div>
+</body>
+</html>

@@ -32,6 +32,10 @@
 *   **フレームワーク**: **React (JavaScript/TypeScript)**
 *   **スタイリング**: **Bootstrap** (または Material Design)
 *   **ビルドツール**: **Vite** (または Webpack)
+*   **グラフ・可視化**: **Recharts**
+    *   週次振り返り一覧画面でのグラフ表示
+    *   ComposedChart（2軸表示）で負荷ポイントと設問スコアを同時表示
+    *   レスポンシブ対応でモバイル・デスクトップ両対応
 
 #### 4. AI連携
 

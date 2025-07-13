@@ -4,6 +4,7 @@ from src.services.user_service import UserService
 import bcrypt
 import uuid
 from datetime import datetime
+from functools import wraps
 
 bp = Blueprint('users', __name__)
 
@@ -11,6 +12,15 @@ bp = Blueprint('users', __name__)
 bq_client = bigquery.Client()
 table_id = 'helth-report.health_data.users'
 user_service = UserService(bq_client, table_id)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'login required'}), 401
+        return f(user_id, *args, **kwargs)
+    return decorated_function
 
 @bp.route('/register', methods=['POST'])
 def register():
