@@ -1,0 +1,14 @@
+[
+  {"name": "id", "type": "STRING", "mode": "REQUIRED", "description": "週次振り返りの一意なID (UUID)"},
+  {"name": "user_id", "type": "STRING", "mode": "REQUIRED", "description": "ユーザーID"},
+  {"name": "week_start_date", "type": "DATE", "mode": "REQUIRED", "description": "週の開始日"},
+  {"name": "reflection_notes", "type": "STRING", "mode": "NULLABLE", "description": "週の振り返りノート"},
+  {"name": "title", "type": "STRING", "mode": "NULLABLE", "description": "AI診断リクエストのタイトル"},
+  {"name": "questions", "type": "STRING", "mode": "NULLABLE", "description": "設問文＋スコア配列(JSON文字列)"},
+  {"name": "anxieties", "type": "STRING", "mode": "NULLABLE", "description": "不安なこと"},
+  {"name": "good_things", "type": "STRING", "mode": "NULLABLE", "description": "良かったこと"},
+  {"name": "ai_diagnosis_result", "type": "STRING", "mode": "NULLABLE", "description": "AI診断コメント"},
+  {"name": "weekly_total_load_points", "type": "FLOAT", "mode": "NULLABLE", "description": "週次負荷ポイント合計（小数可）"},
+  {"name": "created_at", "type": "TIMESTAMP", "mode": "REQUIRED", "description": "レコード作成日時"},
+  {"name": "updated_at", "type": "TIMESTAMP", "mode": "REQUIRED", "description": "レコード最終更新日時"}
+] 

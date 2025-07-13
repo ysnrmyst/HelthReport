@@ -9,7 +9,7 @@ weekly_reflections_bp = Blueprint('weekly_reflections', __name__, url_prefix='/a
 
 # BigQueryクライアントとテーブルID（本番ではDIや設定ファイルで管理）
 db_client = bigquery.Client()
-table_id = 'helth-report.health_data.WeeklyReflections'  # 実際のBigQueryテーブルIDに修正
+table_id = 'health-report-465810.health-data.WeeklyReflections'  # 実際のBigQueryテーブルIDに修正
 service = WeeklyReflectionService(db_client, table_id)
 
 def get_week_dates(week_start_date):
@@ -97,7 +97,7 @@ def get_weekly_load_summary():
 
     # BigQueryクエリで週次合計と日別サマリーを取得
     db_client = bigquery.Client()
-    activities_table_id = 'helth-report.health_data.activities'
+    activities_table_id = 'health-report-465810.health-data.activities'
     week_dates = get_week_dates(week_start_date)
     week_end_date = week_dates[-1]
 

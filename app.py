@@ -30,7 +30,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # FlaskのURL生成を本番用に固定（本番のみ有効）
 if os.environ.get("FLASK_ENV") == "production":
     app.config['PREFERRED_URL_SCHEME'] = 'https'
-    app.config['SERVER_NAME'] = 'helth-report-129908471897.us-central1.run.app'
+    app.config['SERVER_NAME'] = 'health-report-465810-129908471897.us-central1.run.app'
 
 # Cloud Run（本番環境）用セッションCookie設定
 app.config.update(
@@ -45,13 +45,13 @@ CORS(app,
      resources={r"/*": {"origins": [
          "http://localhost:3000",
          "http://127.0.0.1:3000",
-         "https://helth-report-129908471897.us-central1.run.app"
+         "https://health-report-465810-129908471897.us-central1.run.app"
      ]}}, 
      supports_credentials=True, 
      methods=["GET", "POST", "DELETE", "PATCH", "OPTIONS"])
 
 # Initialize Vertex AI
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "helth-report") # Get from env or use default
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "health-report-465810") # Get from env or use default
 LOCATION = os.environ.get("GCP_LOCATION", "us-central1") # Get from env or use default
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 

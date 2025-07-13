@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: helth-report-api
+    name: health-report-465810-api
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
@@ -11,7 +11,7 @@ services:
         value: 3.9
 
   - type: web
-    name: helth-report-frontend
+    name: health-report-465810-frontend
     env: static
     buildCommand: cd static/frontend && npm install && npm run build
     staticPublishPath: static/frontend/build

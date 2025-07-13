@@ -6,7 +6,7 @@ from src.core.db import get_db_client
 
 # これは一時的なものです。後で依存性注入のパターンにリファクタリングします。
 # TODO: テーブルIDを環境変数から取得するように修正
-TABLE_ID = "helth-report.health_data.activities"
+TABLE_ID = "health-report-465810.health-data.activities"
 db_client = get_db_client()
 activity_service = ActivityService(db_client=db_client, table_id=TABLE_ID)
 

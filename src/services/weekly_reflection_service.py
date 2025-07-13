@@ -22,7 +22,7 @@ class WeeklyReflectionService:
         
         # Activitiesテーブルから該当週の負荷ポイントを取得
         # fatigue_level * 作業時間（分）を負荷ポイントとして計算
-        activities_table_id = 'helth-report.health_data.activities'
+        activities_table_id = 'health-report-465810.health-data.activities'
         
         query = f"""
         SELECT COALESCE(SUM(

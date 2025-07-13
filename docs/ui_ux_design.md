@@ -179,14 +179,14 @@ graph TD
 3 gcloudでDocker認証
 gcloud auth configure-docker us-central1-docker.pkg.dev
 4. Dockerイメージのビルド プロジェクトルート venv外　Desktop Dockerを起動した状態で
-docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/helth-report/helth-report/helth-report-image:latest --push .
+docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest --push .
 5. Cloud Runへデプロイ
-gcloud run deploy helth-report \
-  --image us-central1-docker.pkg.dev/helth-report/helth-report/helth-report-image:latest \
+gcloud run deploy health-report-465810 \
+  --image us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars FLASK_SECRET_KEY=myapp_helth_report_key,FLASK_ENV=production
+  --set-env-vars FLASK_SECRET_KEY=myapp_health_report_465810_key,FLASK_ENV=production
 
 
 - Cloud Runの管理画面で環境変数（FLASK_ENV=productionなど）を追加してもOK

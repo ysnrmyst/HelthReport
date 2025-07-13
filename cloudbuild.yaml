@@ -1,10 +1,10 @@
 steps:
 # Build and push the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image', '.', '--build-arg', 'REACT_APP_API_BASE_URL=${_REACT_APP_API_BASE_URL}'] # _REACT_APP_API_BASE_URL is a Cloud Build substitution variable
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/health-report-465810/health-report-465810-image', '.', '--build-arg', 'REACT_APP_API_BASE_URL=${_REACT_APP_API_BASE_URL}'] # _REACT_APP_API_BASE_URL is a Cloud Build substitution variable
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image']
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/health-report-465810/health-report-465810-image']
 
 # Deploy to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -12,11 +12,11 @@ steps:
   args: [
     'run',
     'deploy',
-    'helth-report',
-    '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image',
+    'health-report-465810',
+    '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/health-report-465810/health-report-465810-image',
     '--region', 'us-central1',
     '--platform', 'managed',
     '--allow-unauthenticated'
   ]
 images:
-- 'us-central1-docker.pkg.dev/$PROJECT_ID/helth-report/helth-report-image'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/health-report-465810/health-report-465810-image'
