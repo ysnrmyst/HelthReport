@@ -15,4 +15,4 @@ echo "3. Flaskサーバーを起動します..."
 echo "Ctrl+Cで停止できます"
 echo ""
 
-python app.py 
+python3 app.py 

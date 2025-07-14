@@ -139,6 +139,11 @@ graph TD
 
 - バッファが解放されると、通常通り削除・編集が可能になります。
 
+### CORS・manifest.jsonの注意事項
+
+- CORSは本番Cloud RunのURL（例：https://health-report-465810-621003261884.us-central1.run.app）をFlaskのCORS許可リストに必ず追加すること。
+- manifest.jsonはReactビルド時に自動生成される。Flaskで /manifest.json を静的に返すルートを追加すること。
+
 ### 週次振り返り保存時のエラーハンドリング
 
 - 保存時に400エラーが発生した場合、詳細なエラーメッセージを表示
@@ -181,13 +186,15 @@ gcloud auth configure-docker us-central1-docker.pkg.dev
 4. Dockerイメージのビルド プロジェクトルート venv外　Desktop Dockerを起動した状態で
 docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest --push .
 5. Cloud Runへデプロイ
+
+
 gcloud run deploy health-report-465810 \
   --image us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars FLASK_SECRET_KEY=myapp_health_report_465810_key,FLASK_ENV=production
-
+  --set-env-vars FLASK_SECRET_KEY=xmyapp_health_report_465810_key,FLASK_ENV=production \
+  --project=health-report-465810
 
 - Cloud Runの管理画面で環境変数（FLASK_ENV=productionなど）を追加してもOK
 - デプロイ後は https でアクセス

@@ -35,7 +35,7 @@
 
 *   **バックエンド**: Python (Flask)
 *   **フロントエンド**: HTML, CSS, JavaScript (React)
-*   **データベース**: Google BigQuery
+*   **データベース**: Google BigQuery（データセット名: health_data、プロジェクトID: health-report-465810）
 *   **AI/ML**: Vertex AI Gemini API
 *   **認証**: Google OAuth 2.0
 *   **デプロイ**: Google Cloud Run

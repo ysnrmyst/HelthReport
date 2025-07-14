@@ -47,3 +47,4 @@
 *   **コンテナ化**: **Docker**
 *   **デプロイ先**: Google Cloud Platform (Cloud Run, Cloud Functions, App Engineなど)
     *   BigQueryとの親和性が高く、インフラ管理の負担を軽減できます。
+    *   本番Cloud RunサービスURL例：https://health-report-465810-621003261884.us-central1.run.app

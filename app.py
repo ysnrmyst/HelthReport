@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_cors import CORS
 from vertexai.generative_models import GenerativeModel
 import vertexai
@@ -33,19 +33,29 @@ if os.environ.get("FLASK_ENV") == "production":
     app.config['SERVER_NAME'] = 'health-report-465810-129908471897.us-central1.run.app'
 
 # Cloud Run（本番環境）用セッションCookie設定
-app.config.update(
-    SESSION_COOKIE_SECURE=True,      # HTTPSのみ
-    SESSION_COOKIE_SAMESITE='None',  # クロスサイトでも送信
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_PATH='/'
-)
+if os.environ.get("FLASK_ENV") == "production":
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,      # HTTPSのみ
+        SESSION_COOKIE_SAMESITE='None',  # クロスサイトでも送信
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_PATH='/'
+    )
+else:
+    # 開発環境用設定
+    app.config.update(
+        SESSION_COOKIE_SECURE=False,     # HTTPでもOK
+        SESSION_COOKIE_SAMESITE='Lax',   # 開発環境ではLax
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_PATH='/'
+    )
 
 # Enable CORS
 CORS(app, 
      resources={r"/*": {"origins": [
          "http://localhost:3000",
          "http://127.0.0.1:3000",
-         "https://health-report-465810-129908471897.us-central1.run.app"
+         "https://health-report-465810-129908471897.us-central1.run.app",
+         "https://health-report-465810-621003261884.us-central1.run.app"
      ]}}, 
      supports_credentials=True, 
      methods=["GET", "POST", "DELETE", "PATCH", "OPTIONS"])
@@ -59,6 +69,10 @@ vertexai.init(project=PROJECT_ID, location=LOCATION)
 app.register_blueprint(activities_bp)
 app.register_blueprint(users_bp, url_prefix='/api/v1')
 app.register_blueprint(weekly_reflections_bp)
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('static/frontend/build', 'manifest.json')
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

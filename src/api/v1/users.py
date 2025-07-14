@@ -10,7 +10,7 @@ bp = Blueprint('users', __name__)
 
 # UserServiceインスタンス生成
 bq_client = bigquery.Client()
-table_id = 'health-report-465810.health-data.users'
+table_id = 'health-report-465810.health_data.users'
 user_service = UserService(bq_client, table_id)
 
 def login_required(f):
