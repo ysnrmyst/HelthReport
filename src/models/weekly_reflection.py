@@ -15,7 +15,7 @@ class WeeklyReflectionBase(BaseModel):
     anxieties: Optional[str] = Field(None, description="不安なこと")
     good_things: Optional[str] = Field(None, description="良かったこと")
     ai_diagnosis_result: Optional[str] = Field(None, description="AI診断コメント")
-    weekly_total_load_points: Optional[int] = Field(None, description="週次負荷ポイント合計")
+    weekly_total_load_points: Optional[float] = Field(None, description="週次負荷ポイント合計")
 
 class WeeklyReflectionCreate(WeeklyReflectionBase):
     pass

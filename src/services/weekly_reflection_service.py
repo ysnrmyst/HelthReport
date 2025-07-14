@@ -12,7 +12,7 @@ class WeeklyReflectionService:
         self.client = db_client
         self.table_id = table_id
 
-    def calculate_weekly_load_points(self, user_id: str, week_start_date: date) -> int:
+    def calculate_weekly_load_points(self, user_id: str, week_start_date: date) -> float:
         """
         指定された週の日々の負荷ポイントを合計する
         fatigue_level * 作業時間（分）を負荷ポイントとして計算
@@ -44,7 +44,7 @@ class WeeklyReflectionService:
         )
         
         results = list(self.client.query(query, job_config=job_config).result())
-        return results[0]["total_load_points"] if results else 0
+        return float(results[0]["total_load_points"]) if results else 0.0
 
     def create_weekly_reflection(self, user_id: str, data: WeeklyReflectionCreate) -> Optional[WeeklyReflectionInDB]:
         print(f"=== [DEBUG] create_weekly_reflection called with user_id: {user_id} ===")
@@ -210,7 +210,7 @@ class WeeklyReflectionService:
                     bigquery.ScalarQueryParameter("anxieties", "STRING", data.anxieties),
                     bigquery.ScalarQueryParameter("good_things", "STRING", data.good_things),
                     bigquery.ScalarQueryParameter("ai_diagnosis_result", "STRING", data.ai_diagnosis_result),
-                    bigquery.ScalarQueryParameter("weekly_total_load_points", "INT64", weekly_total_load_points),
+                    bigquery.ScalarQueryParameter("weekly_total_load_points", "FLOAT64", weekly_total_load_points),
                     bigquery.ScalarQueryParameter("id", "STRING", row_id)
                 ]
             )
