@@ -7,3 +7,12 @@ __pycache__
 .pytest_cache
 .dockerignore
 Dockerfile
+
+.git
+tests
+docs
+*.md
+*.log
+node_modules
+static/frontend/node_modules
+static/frontend/.cache

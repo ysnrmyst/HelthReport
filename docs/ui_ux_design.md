@@ -187,7 +187,6 @@ gcloud auth configure-docker us-central1-docker.pkg.dev
 docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest --push .
 5. Cloud Runへデプロイ
 
-
 gcloud run deploy health-report-465810 \
   --image us-central1-docker.pkg.dev/health-report-465810/health-report-465810/health-report-465810-image:latest \
   --platform managed \

@@ -1,40 +1,32 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
-
-# Install Node.js and npm. Note: This installs the default Node.js version available in the Debian repository.
-# For a specific Node.js version, consider using a multi-stage build or NodeSource PPA.
-RUN apt-get update && apt-get install -y nodejs npm
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the dependencies file to the working directory
-COPY requirements.txt .
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code to the working directory
-COPY . .
-
-# Build React frontend
-WORKDIR /app/static/frontend
-RUN npm install
-
-# Set REACT_APP_API_BASE_URL as a build argument
+# 1. Node.js/Reactビルド用ステージ
+FROM node:18-slim AS frontend-build
+WORKDIR /frontend
+COPY static/frontend/package*.json ./
+RUN npm ci
+COPY static/frontend ./
 ARG REACT_APP_API_BASE_URL
-
-# Build React frontend with the specified API base URL
 RUN REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL CI=true npm run build
 
-# デバッグ用：環境変数が正しく設定されているか確認
-RUN echo "REACT_APP_API_BASE_URL is set to: $REACT_APP_API_BASE_URL"
+# 2. Python/Flask本番用ステージ
+FROM python:3.9-slim
 
-# Back to root directory
+# 必要なシステムパッケージだけインストール
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Expose the port the app runs on
+# Python依存のみ先にインストール（キャッシュ効率UP）
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# アプリ本体をコピー
+COPY . .
+
+# フロントエンドのビルド成果物だけをコピー
+COPY --from=frontend-build /frontend/build ./static/frontend/build
+
 EXPOSE 8080
 
-# Command to run the application using Gunicorn
 CMD ["python", "app.py"]
